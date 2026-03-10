@@ -14,14 +14,14 @@ import com.example.myapplication.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val cuentaActual = mutableListOf<Plato>()
+    private lateinit var mesaActual: Mesa
     private lateinit var listaMenu: List<Plato>
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val id = result.data?.getIntExtra("id", -1) ?: -1
             listaMenu.find { it.id == id }?.let {
-                cuentaActual.add(it)
+                mesaActual.items.add(it)
                 actualizarResumen()
             }
         }
@@ -32,7 +32,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Recibir la mesa de la pantalla anterior
+        mesaActual = intent.getSerializableExtra("mesa") as? Mesa ?: Mesa(0, "Nueva Mesa")
+        
+        // Mostrar el nombre de la mesa en el título
+        binding.tvAppTitle.text = "Pedido: ${mesaActual.nombre}"
+
         setupMenu()
+        actualizarResumen()
+
+        // Cambiar texto del botón para empleados
+        binding.btnCobrar.text = "ENVIAR COMANDA"
+        binding.btnCobrar.setOnClickListener {
+            // Regresar la mesa con los nuevos items agregados
+            val resultIntent = Intent()
+            resultIntent.putExtra("mesa", mesaActual)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
+
+        binding.btnBack.setOnClickListener {
+            finish() // Regresar sin guardar si es necesario, o podrías guardar igual
+        }
     }
 
     private fun setupMenu() {
@@ -64,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 getResult.launch(intent)
             },
             onAgregarClick = { plato -> 
-                cuentaActual.add(plato)
+                mesaActual.items.add(plato)
                 actualizarResumen()
             }
         )
@@ -76,13 +97,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun actualizarResumen() {
-        val total = cuentaActual.sumOf { it.precio }
-        binding.tvItemCount.text = "${cuentaActual.size} ITEMS"
+        val total = mesaActual.items.sumOf { it.precio }
+        binding.tvItemCount.text = "${mesaActual.items.size} ARTÍCULOS"
         binding.tvTotalValue.text = "$${String.format("%.2f", total)}"
 
         binding.orderList.removeAllViews()
         
-        val itemsAgrupados = cuentaActual.groupBy { it.nombre }
+        val itemsAgrupados = mesaActual.items.groupBy { it.nombre }
         
         for ((nombre, items) in itemsAgrupados) {
             val row = LinearLayout(this).apply {
@@ -92,11 +113,10 @@ class MainActivity : AppCompatActivity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply { setMargins(0, 4, 0, 4) }
                 
-                // Opción para eliminar: Si dejas presionado el ítem, se borra de la lista
                 setOnLongClickListener {
-                    val platoABorrar = cuentaActual.find { it.nombre == nombre }
+                    val platoABorrar = mesaActual.items.find { it.nombre == nombre }
                     if (platoABorrar != null) {
-                        cuentaActual.remove(platoABorrar)
+                        mesaActual.items.remove(platoABorrar)
                         actualizarResumen()
                     }
                     true

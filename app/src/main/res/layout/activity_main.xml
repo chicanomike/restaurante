@@ -9,13 +9,13 @@
 
     <!-- Barra Superior -->
     <ImageButton
-        android:id="@+id/btnMenu"
+        android:id="@+id/btnBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_sort_by_size"
+        android:src="@android:drawable/ic_menu_revert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/primary_orange" />
@@ -24,14 +24,14 @@
         android:id="@+id/tvAppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="K-Dog TPV"
+        android:text="Pedido: Mesa"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/btnMenu"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnMenu" />
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
     <ImageButton
         android:id="@+id/btnProfile"
@@ -58,7 +58,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMenu"
+        app:layout_constraintTop_toBottomOf="@+id/btnBack"
         tools:listitem="@layout/item_category" />
 
     <!-- Menú Cuadrícula -->
@@ -162,7 +162,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/primary_orange"
-            android:text="Cobrar / Emitir Ticket"
+            android:text="ENVIAR COMANDA"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
